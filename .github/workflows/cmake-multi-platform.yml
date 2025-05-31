@@ -51,8 +51,15 @@ jobs:
 
     - name: Create MSI package
       if: matrix.os == 'windows-latest'
-      run: cpack -G MSI
+      run: cpack -G MSI -W
 
     - name: Create DMG package
       run: cpack -G DMG
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: v1.${{ github.run_number }}
+        name: Release v1.${{ github.run_number }}
+        files: build/*.deb
      
