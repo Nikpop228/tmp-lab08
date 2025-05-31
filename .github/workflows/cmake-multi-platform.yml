@@ -16,12 +16,14 @@ jobs:
       
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
+        cpack_flag: [DEB RPM WIX DMG]
         build_type: [Release]
         include:
           - os: windows-latest
-            cpp_compiler: cl
+            cpack_flag: WIX
           - os: ubuntu-latest
-            cpp_compiler: g++
+            cpack_flag: DEB
+            cpack_flag: RPM
 
     steps:
     - uses: actions/checkout@v4
@@ -48,20 +50,25 @@ jobs:
     - name: Build
       run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
     
-    - name:  Create package
-      run:   |
+    - name: Create package
+      run: |
         cd ${{ steps.strings.outputs.build-output-dir }}
-         if [ "$RUNNER_OS" == "Linux" ]; then
-              cpack -G RPM
-              cpack -G DEB
-         elif [ "$RUNNER_OS" == "Windows" ]; then
-              cpack -G WIX
-         elif [ "$RUNNER_OS" == "macos" ]; then
-              cpack -G DMG
-         else
-              echo "$RUNNER_OS not supported"
-              exit 1
-         fi
+        cpack -G ${{ matrix.cpack_flag }}
+
+    # - name: Create package
+    #   run:   |
+    #      cd ${{ steps.strings.outputs.build-output-dir }}
+    #      if [ "$RUNNER_OS" == "Linux" ]; then
+    #           cpack -G RPM
+    #           cpack -G DEB
+    #      elif [ "$RUNNER_OS" == "Windows" ]; then
+    #           cpack -G WIX
+    #      elif [ "$RUNNER_OS" == "macos" ]; then
+    #           cpack -G DMG
+    #      else
+    #           echo "$RUNNER_OS not supported"
+    #           exit 1
+    #      fi
 
     # - name: Create DEB & RPM packages
     #   if: matrix.os == 'ubuntu-latest'
