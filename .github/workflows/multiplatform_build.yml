@@ -7,60 +7,97 @@ on:
     branches: [ "master" ]
 
 jobs:
-  ubuntu_build:
-    runs-on: ubuntu-latest
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            cpack_flag: DEB
+          - os: ubuntu-latest
+            cpack_flag: RPM4
+          - os: windows-latest
+            cpack_flag: WIX
+          - os: macos-latest
+            cpack_flag: DragNDrop
+    
+    runs-on: ${{matrix.os}}
     
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Install dependencies
+        run: |
+          if: ${{ matrix.os }} == 'ubuntu_latest'
+          sudo apt install rpm
+
+      - name: Configure CMake
+        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build ${{github.workspace}}/build --config Release
+
+      - name: Create packages
+        working-directory: ${{github.workspace}}/build
+        run: cpack -G ${{ matrix.cpack_flag }}
+
+  # ubuntu_build:
+  #   runs-on: ubuntu-latest
     
-    - name: Install dependencies
-      run: sudo apt install rpm
-
-    - name: Configure CMake
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release
-
-    - name: Build
-      run: cmake --build ${{github.workspace}}/build --config Release
-
-    - name: Create packages
-      working-directory: ${{github.workspace}}/build
-      run: |
-        cpack -G DEB
-        cpack -G RPM
-
-  windows_build:
-    runs-on: windows-latest
+  #   steps:
+  #   - name: Checkout
+  #     uses: actions/checkout@v4
     
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+  #   - name: Install dependencies
+  #     run: sudo apt install rpm
 
-    - name: Configure CMake
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release
+  #   - name: Configure CMake
+  #     run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release
 
-    - name: Build
-      run: cmake --build ${{github.workspace}}/build --config Release
+  #   - name: Build
+  #     run: cmake --build ${{github.workspace}}/build --config Release
 
-    - name: Create packages
-      working-directory: ${{github.workspace}}/build
-      run: |
-        cpack -G WIX
+  #   - name: Create packages
+  #     working-directory: ${{github.workspace}}/build
+  #     run: |
+  #       cpack -G DEB
+  #       cpack -G RPM
 
-  macos_build:
-    runs-on: macos-latest
+  # windows_build:
+  #   runs-on: windows-latest
     
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+  #   steps:
+  #   - name: Checkout
+  #     uses: actions/checkout@v4
 
-    - name: Configure CMake
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release
+  #   - name: Configure CMake
+  #     run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release
 
-    - name: Build
-      run: cmake --build ${{github.workspace}}/build --config Release
+  #   - name: Build
+  #     run: cmake --build ${{github.workspace}}/build --config Release
 
-    - name: Create packages
-      working-directory: ${{github.workspace}}/build
-      run: |
-        cpack -G DragNDrop
+  #   - name: Create packages
+  #     working-directory: ${{github.workspace}}/build
+  #     run: |
+  #       cpack -G WIX
+
+  # macos_build:
+  #   runs-on: macos-latest
+    
+  #   steps:
+  #   - name: Checkout
+  #     uses: actions/checkout@v4
+
+  #   - name: Configure CMake
+  #     run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release
+
+  #   - name: Build
+  #     run: cmake --build ${{github.workspace}}/build --config Release
+
+  #   - name: Create packages
+  #     working-directory: ${{github.workspace}}/build
+  #     run: |
+  #       cpack -G DragNDrop
+
+  # create_release:
+    
