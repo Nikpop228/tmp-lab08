@@ -91,22 +91,25 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - uses: actions/download-artifact@v4
 
     - name: download_ubuntu
+      uses: actions/download-artifact@v4
       with:
-          name: ubuntu-pack
-          path: artifacts/linux
+        name: ubuntu-pack
+        path: artifacts/linux
 
-    - name:
+    - name: download_windows
+      uses: actions/download-artifact@v4
       with:
-          name: win-pack
-          path: artifacts/windows
-    - name: 
+        name: win-pack
+        path: artifacts/windows
+
+    - name: download_macos
+      uses: actions/download-artifact@v4 
       with:
-          name: macos-pack
-          path: artifacts/macos
-          
+        name: macos-pack
+        path: artifacts/macos
+
     - name: Create Release
       uses: softprops/action-gh-release@v2
       with:
