@@ -21,10 +21,13 @@ jobs:
         include:
           - os: windows-latest
             cpack_flag: WIX
+            cpp_compiler: cl
           - os: ubuntu-latest
             cpack_flag: DEB
           - os: ubuntu-latest
             cpack_flag: RPM
+            cpp_compiler: g++
+
         exclude:
           - os: windows-latest
             cpack_flag: DEB
