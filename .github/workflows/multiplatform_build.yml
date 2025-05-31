@@ -8,6 +8,8 @@ on:
 
 jobs:
   build:
+    runs-on: ${{matrix.os}}
+
     strategy:
       matrix:
         include:
@@ -20,23 +22,21 @@ jobs:
           - os: macos-latest
             cpack_flag: DragNDrop
     
-    runs-on: ${{matrix.os}}
-    
     steps:
-      - name: Checkout
-      - uses: actions/checkout@v4
+    - name: Checkout
+    - uses: actions/checkout@v4
 
-      # - if: ${{ matrix.os}} == ubuntu-latest
-      #   run: sudo apt install rpm
+    - if: ${{ matrix.os}} == ubuntu-latest
+      run: sudo apt install rpm
 
-      - name: Configure CMake
-        run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+    - name: Configure CMake
+      run: cmake -B build -DCMAKE_BUILD_TYPE=Release
 
-      - name: Build
-        run: cmake --build build --config Release
+    - name: Build
+      run: cmake --build build --config Release
 
-      - name: Create packages
-        run: cd build && cpack -G ${{ matrix.cpack_flag }}
+    - name: Create packages
+      run: cd build && cpack -G ${{ matrix.cpack_flag }}
 
   # ubuntu_build:
   #   runs-on: ubuntu-latest
