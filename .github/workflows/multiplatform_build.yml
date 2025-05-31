@@ -24,10 +24,10 @@ jobs:
     
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-
-      - if: ${{ matrix.os }} == ubuntu_latest
-        run: sudo apt install rpm
+      - uses: actions/checkout@v4
+      - run: |
+        if: ${{ matrix.os}} == ubuntu-latest
+          sudo apt install rpm
 
       - name: Configure CMake
         run: cmake -B build -DCMAKE_BUILD_TYPE=Release
