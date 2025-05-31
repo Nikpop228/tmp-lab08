@@ -58,10 +58,16 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: download_ubuntu
+    - name: download_ubuntu_deb
       uses: actions/download-artifact@v4
       with:
-        name: ubuntu-latest-pack
+        name: ubuntu-latest-deb-pack
+        path: artifacts/linux
+
+    - name: download_ubuntu_rpm
+      uses: actions/download-artifact@v4
+      with:
+        name: ubuntu-latest-rpm-pack
         path: artifacts/linux
 
     - name: download_windows
