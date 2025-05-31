@@ -21,7 +21,7 @@ jobs:
           - os: windows-latest
             cpp_compiler: cl
           - os: ubuntu-latest
-            cpp_compiler: gcc
+            cpp_compiler: g++
 
     steps:
     - uses: actions/checkout@v4
