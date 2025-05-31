@@ -20,15 +20,14 @@ jobs:
         build_type: [Release]
         exclude:
           - os: windows-latest
-            cpack_flag: DEB
-          #- os: windows-latest
-            cpack_flag: RPM
-          #- os: windows-latest
-            cpack_flag: DMG
+            cpack_flag: |
+              DEB
+              RPM
+              DMG
           - os: ubuntu-latest
-            cpack_flag: WIX
-          #- os: ubuntu-latest
-            cpack_flag: DMG
+            cpack_flag: |
+              WIX
+              DMG
           # - cpack_flag: DEB
           #   os: windows-latest
           # - cpack_flag: DEB
