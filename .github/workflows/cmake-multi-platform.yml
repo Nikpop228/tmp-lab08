@@ -19,18 +19,28 @@ jobs:
         cpack_flag: [DEB RPM WIX DMG]
         build_type: [Release]
         exclude:
-          - cpack_flag: DEB
-            os: windows-latest
-            os: macos-latest
-          - cpack_flag: RPM
-            os: windows-latest
-            os: macos-latest
-          - cpack_flag: DMG
-            os: ubuntu-latest
-            os: windows-latest
-          - cpack_flag: WIX
-            os: ubuntu-latest
-            os: macos-latest
+          - os: windows-latest
+            cpack_flag: DEB
+          - os: windows-latest
+            cpack_flag: RPM
+          - os: windows-latest
+            cpack_flag: DMG
+          - os: ubuntu-latest
+            cpack_flag: WIX
+          - os: ubuntu-latest
+            cpack_flag: DMG
+          # - cpack_flag: DEB
+          #   os: windows-latest
+          #   os: macos-latest
+          # - cpack_flag: RPM
+          #   os: windows-latest
+          #   os: macos-latest
+          # - cpack_flag: DMG
+          #   os: ubuntu-latest
+          #   os: windows-latest
+          # - cpack_flag: WIX
+          #   os: ubuntu-latest
+          #   os: macos-latest
 
     steps:
     - uses: actions/checkout@v4
