@@ -117,6 +117,7 @@ jobs:
         tag_name: v1.${{ github.run_number }}
         name: Release v1.${{ github.run_number }}
         files: |
-          artifacts/linux/*
-          artifacts/windows/*
-          artifacts/macos/*
+          artifacts/linux/*.deb
+          artifacts/linux/*.rpm
+          artifacts/windows/*.msi
+          artifacts/macos/*.dmg
