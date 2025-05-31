@@ -54,22 +54,23 @@ jobs:
   create_release:
     needs: build
     runs-on: ubuntu-latest
-    matrix:
-      include:
-        - os: ubuntu-latest
-          oos: linux
-          extension: deb
-        - os: ubuntu-latest
-          oos: linux
-          extension: rpm
-        - os: windows-latest
-          oos: windows
-          extension: msi
-        - os: macos-latest
-          oos: macos
-          extension: dmg
 
     steps:
+    - matrix:
+        include:
+          - os: ubuntu-latest
+            oos: linux
+            extension: deb
+          - os: ubuntu-latest
+            oos: linux
+            extension: rpm
+          - os: windows-latest
+            oos: windows
+            extension: msi
+          - os: macos-latest
+            oos: macos
+            extension: dmg
+            
     - name: Checkout
       uses: actions/checkout@v4
 
