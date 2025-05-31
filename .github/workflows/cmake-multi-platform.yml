@@ -59,7 +59,7 @@ jobs:
       if: matrix.os == 'windows-latest'
       run: |
        cd ${{ steps.strings.outputs.build-output-dir }}
-       cpack -G MSI -W
+       cpack -G WIX
 
     - name: Create DMG package
       run: |
