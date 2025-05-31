@@ -24,7 +24,7 @@ jobs:
     
     steps:
     - name: Checkout
-    - uses: actions/checkout@v4
+      uses: actions/checkout@v4
 
     - if: ${{ matrix.os}} == ubuntu-latest
       run: sudo apt install rpm
