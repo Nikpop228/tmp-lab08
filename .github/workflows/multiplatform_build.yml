@@ -30,14 +30,13 @@ jobs:
         run: sudo apt install rpm
 
       - name: Configure CMake
-        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release
 
       - name: Build
-        run: cmake --build ${{github.workspace}}/build --config Release
+        run: cmake --build build --config Release
 
       - name: Create packages
-        working-directory: ${{github.workspace}}/build
-        run: cpack -G ${{ matrix.cpack_flag }}
+        run: cd build && cpack -G ${{ matrix.cpack_flag }}
 
   # ubuntu_build:
   #   runs-on: ubuntu-latest
