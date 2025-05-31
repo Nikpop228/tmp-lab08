@@ -28,7 +28,9 @@ jobs:
           - cpack_flag: DMG
             os: ubuntu-latest
             os: windows-latest
-            cpack_flag: WIX
+          - cpack_flag: WIX
+            os: ubuntu-latest
+            os: macos-latest
 
     steps:
     - uses: actions/checkout@v4
