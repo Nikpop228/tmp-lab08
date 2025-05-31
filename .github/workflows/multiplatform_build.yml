@@ -8,116 +8,35 @@ on:
 
 jobs:
 
-  ubuntu_build:
-    runs-on: ubuntu-latest
+    build:
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            cpack_flag: DEB
+          - os: ubuntu-latest
+            cpack_flag: RPM
+          - os: windows-latest
+            cpack_flag: WIX
+          - os: macos-latest
+            cpack_flag: DragNDrop
+    
+    runs-on: ${{matrix.os}}
     
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-    
-    - name: Install dependencies
-      run: sudo apt install rpm
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Configure CMake
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release
+      - name: Install dependencies
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt install rpm
 
-    - name: Build
-      run: cmake --build ${{github.workspace}}/build --config Release
+      - name: Configure CMake
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release
 
-    - name: Create packages
-      working-directory: ${{github.workspace}}/build
-      run: |
-        cpack -G DEB
-        cpack -G RPM
+      - name: Build
+        run: cmake --build build --config Release
 
-    - name: Upload artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: ubuntu-pack
-        path: |
-          build/*.deb
-          build/*.rpm
-
-  windows_build:
-    runs-on: windows-latest
-    
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-
-    - name: Configure CMake
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release
-
-    - name: Build
-      run: cmake --build ${{github.workspace}}/build --config Release
-
-    - name: Create packages
-      working-directory: ${{github.workspace}}/build
-      run: |
-        cpack -G WIX
-
-    - name: Upload artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: win-pack
-        path: build/*.msi
-
-  macos_build:
-    runs-on: macos-latest
-    
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-
-    - name: Configure CMake
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release
-
-    - name: Build
-      run: cmake --build ${{github.workspace}}/build --config Release
-
-    - name: Create packages
-      working-directory: ${{github.workspace}}/build
-      run: |
-        cpack -G DragNDrop
-
-    - name: Upload artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: macos-pack
-        path: build/*.dmg
-    
-  create_release:
-    needs: [ubuntu_build, windows_build, macos_build]
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: download_ubuntu
-      uses: actions/download-artifact@v4
-      with:
-        name: ubuntu-pack
-        path: artifacts/linux
-
-    - name: download_windows
-      uses: actions/download-artifact@v4
-      with:
-        name: win-pack
-        path: artifacts/windows
-
-    - name: download_macos
-      uses: actions/download-artifact@v4 
-      with:
-        name: macos-pack
-        path: artifacts/macos
-
-    - name: Create Release
-      uses: softprops/action-gh-release@v2
-      with:
-        tag_name: v1.${{ github.run_number }}
-        name: Release v1.${{ github.run_number }}
-        files: |
-          artifacts/linux/*.deb
-          artifacts/linux/*.rpm
-          artifacts/windows/*.msi
-          artifacts/macos/*.dmg
+      - name: Create packages
+        run: cd build && cpack -G ${{ matrix.cpack_flag }}
