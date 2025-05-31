@@ -18,27 +18,17 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
         cpack_flag: [DEB RPM WIX DMG]
         build_type: [Release]
-        include:
-          - os: windows-latest
-            cpack_flag: WIX
-            cpp_compiler: cl
-          - os: ubuntu-latest
-            cpack_flag: DEB
-          - os: ubuntu-latest
-            cpack_flag: RPM
-            cpp_compiler: g++
-
         exclude:
-          - os: windows-latest
-            cpack_flag: DEB
-          - os: windows-latest
-            cpack_flag: RPM
-          - os: windows-latest
-            cpack_flag: DMG
-          - os: ubuntu-latest
+          - cpack_flag: DEB
+            os: windows-latest
+            os: macos-latest
+          - cpack_flag: RPM
+            os: windows-latest
+            os: macos-latest
+          - cpack_flag: DMG
+            os: ubuntu-latest
+            os: windows-latest
             cpack_flag: WIX
-          - os: ubuntu-latest
-            cpack_flag: DMG
 
     steps:
     - uses: actions/checkout@v4
@@ -58,7 +48,6 @@ jobs:
       
       run: >
         cmake -B ${{ steps.strings.outputs.build-output-dir }}
-        -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -S ${{ github.workspace }}
 
