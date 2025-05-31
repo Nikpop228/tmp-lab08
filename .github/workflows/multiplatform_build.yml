@@ -54,35 +54,35 @@ jobs:
   create_release:
     needs: build
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        include:
-          - os: ubuntu-latest
-            oos: linux
-            extension: deb
-          - os: ubuntu-latest
-            oos: linux
-            extension: rpm
-          - os: windows-latest
-            oos: windows
-            extension: msi
-          - os: macos-latest
-            oos: macos
-            extension: dmg
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-    - name: download_artefacts
+    - name: download_ubuntu
       uses: actions/download-artifact@v4
       with:
-        name: ${{ matrix.os }}-${{ matrix.extension }}-pack
-        path: artifacts/${{ matrix.oos }}
+        name: ubuntu-latest-pack
+        path: artifacts/linux
+
+    - name: download_windows
+      uses: actions/download-artifact@v4
+      with:
+        name: windows-latest-pack
+        path: artifacts/windows
+
+    - name: download_macos
+      uses: actions/download-artifact@v4 
+      with:
+        name: macos-latest-pack
+        path: artifacts/macos
 
     - name: Create Release
       uses: softprops/action-gh-release@v2
       with:
         tag_name: v1.${{ github.run_number }}
         name: Release v1.${{ github.run_number }}
-        files: artifacts/${{ matrix.oos }}/*.${{ matrix.extension }}
+        files: |
+          artifacts/linux/*.deb
+          artifacts/linux/*.rpm
+          artifacts/windows/*.msi
+          artifacts/macos/*.dmg
