@@ -1,0 +1,116 @@
+
+name: CMake on multiple platforms
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        cpack_flag: [DEB RPM WIX DMG]
+        build_type: [Release]
+        exclude:
+          - os: windows-latest
+            cpack_flag: DEB
+          - os: windows-latest
+            cpack_flag: RPM
+          - os: windows-latest
+            cpack_flag: DMG
+          - os: ubuntu-latest
+            cpack_flag: WIX
+          - os: ubuntu-latest
+            cpack_flag: DMG
+          # - cpack_flag: DEB
+          #   os: windows-latest
+          # - cpack_flag: DEB
+          #   os: macos-latest
+          # - cpack_flag: RPM
+          #   os: windows-latest
+          # - cpack_flag: RPM
+          #   os: macos-latest
+          # - cpack_flag: DMG
+          #   os: ubuntu-latest
+          # - cpack_flag: DMG
+          #   os: windows-latest
+          # - cpack_flag: WIX
+          #   os: ubuntu-latest
+          # - cpack_flag: WIX
+          #   os: macos-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - if: matrix.os == ubuntu-latest
+      run: sudo apt install rpm
+
+    - name: Set reusable strings
+     
+      id: strings
+      shell: bash
+      run: |
+        echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+
+    - name: Configure CMake
+      
+      run: >
+        cmake -B ${{ steps.strings.outputs.build-output-dir }}
+        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        -S ${{ github.workspace }}
+
+    - name: Build
+      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
+    
+    - name: Create package
+      run: |
+        cd ${{ steps.strings.outputs.build-output-dir }}
+        cpack -G ${{ matrix.cpack_flag }}
+
+    # - name: Create package
+    #   run:   |
+    #      cd ${{ steps.strings.outputs.build-output-dir }}
+    #      if [ "$RUNNER_OS" == "Linux" ]; then
+    #           cpack -G RPM
+    #           cpack -G DEB
+    #      elif [ "$RUNNER_OS" == "Windows" ]; then
+    #           cpack -G WIX
+    #      elif [ "$RUNNER_OS" == "macos" ]; then
+    #           cpack -G DMG
+    #      else
+    #           echo "$RUNNER_OS not supported"
+    #           exit 1
+    #      fi
+
+    # - name: Create DEB & RPM packages
+    #   if: matrix.os == 'ubuntu-latest'
+    #   run: |
+    #    cd ${{ steps.strings.outputs.build-output-dir }}
+    #    cpack -G RPM
+    #    cpack -G DEB
+
+    # - name: Create MSI package
+    #   if: matrix.os == 'windows-latest'
+    #   run: |
+    #    cd ${{ steps.strings.outputs.build-output-dir }}
+    #    cpack -G WIX
+
+    # - name: Create DMG package
+    #   run: |
+    #    cd ${{ steps.strings.outputs.build-output-dir }}
+    #    cpack -G DMG
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: v1.${{ github.run_number }}
+        name: Release v1.${{ github.run_number }}
+        files: build/*.deb
+     
