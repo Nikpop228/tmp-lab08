@@ -14,7 +14,7 @@ jobs:
           - os: ubuntu-latest
             cpack_flag: DEB
           - os: ubuntu-latest
-            cpack_flag: RPM4
+            cpack_flag: RPM
           - os: windows-latest
             cpack_flag: WIX
           - os: macos-latest
