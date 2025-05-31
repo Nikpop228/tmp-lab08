@@ -63,4 +63,4 @@ jobs:
     - name: Create packages
       working-directory: ${{github.workspace}}/build
       run: |
-        cpack -G DMG
+        cpack -G DragNDrop
