@@ -73,13 +73,13 @@ jobs:
     - name: download_windows
       uses: actions/download-artifact@v4
       with:
-        name: windows-latest-pack
+        name: windows-latest-msi-pack
         path: artifacts/windows
 
     - name: download_macos
       uses: actions/download-artifact@v4 
       with:
-        name: macos-latest-pack
+        name: macos-latest-dmg-pack
         path: artifacts/macos
 
     - name: Create Release
