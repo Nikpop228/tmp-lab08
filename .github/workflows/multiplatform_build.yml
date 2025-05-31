@@ -86,3 +86,33 @@ jobs:
         name: macos-pack
         path: build/*.dmg
     
+  create_release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/download-artifact@v4
+
+    - name: download_ubuntu
+      with:
+          name: ubuntu-pack
+          path: artifacts/linux
+
+    - name:
+      with:
+          name: win-pack
+          path: artifacts/windows
+    - name: 
+      with:
+          name: macos-pack
+          path: artifacts/macos
+          
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: v1.${{ github.run_number }}
+        name: Release v1.${{ github.run_number }}
+        files: |
+          artifacts/linux/*
+          artifacts/windows/*
+          artifacts/macos/*
