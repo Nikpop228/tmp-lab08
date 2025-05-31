@@ -48,41 +48,41 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.os }}-pack
+          name: ${{ matrix.os }}-${{ cpack_flag }}-pack
           path: build/*.${{ matrix.extension }}
 
   create_release:
     needs: build
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            oos: linux
+            extension: deb
+          - os: ubuntu-latest
+            oos: linux
+            extension: rpm
+          - os: windows-latest
+            oos: windows
+            extension: msi
+          - os: macos-latest
+            oos: macos
+            extension: dmg
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout
+      uses: actions/checkout@v4
 
-    - name: download_ubuntu
+    - name: download_artefacts
       uses: actions/download-artifact@v4
       with:
-        name: ubuntu-latest-pack
-        path: artifacts/linux
-
-    - name: download_windows
-      uses: actions/download-artifact@v4
-      with:
-        name: windows-latest-pack
-        path: artifacts/windows
-
-    - name: download_macos
-      uses: actions/download-artifact@v4 
-      with:
-        name: macos-latest-pack
-        path: artifacts/macos
+        name: ${{ matrix.os }}-${{ cpack_flag }}-pack
+        path: artifacts/${{ matrix.oos }}
 
     - name: Create Release
       uses: softprops/action-gh-release@v2
       with:
         tag_name: v1.${{ github.run_number }}
         name: Release v1.${{ github.run_number }}
-        files: |
-          artifacts/linux/*.deb
-          artifacts/linux/*.rpm
-          artifacts/windows/*.msi
-          artifacts/macos/*.dmg
+        files: artifacts/${{ matrix.oos }}/*.${{ matrix.extension }}
