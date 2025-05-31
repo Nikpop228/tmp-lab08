@@ -85,6 +85,4 @@ jobs:
       with:
         name: macos-package
         path: build/*.dmg
-
-  create_release:
     
