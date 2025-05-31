@@ -51,12 +51,12 @@ jobs:
     - name:  Create package
       run:   |
         cd ${{ steps.strings.outputs.build-output-dir }}
-         if [ "$RUNNER_OS" == "ubuntu-latest" ]; then
+         if [ "$RUNNER_OS" == "Linux" ]; then
               cpack -G RPM
               cpack -G DEB
-         elif [ "$RUNNER_OS" == "windows-latest" ]; then
+         elif [ "$RUNNER_OS" == "Windows" ]; then
               cpack -G WIX
-         elif [ "$RUNNER_OS" == "macos-latest" ]; then
+         elif [ "$RUNNER_OS" == "macos" ]; then
               cpack -G DMG
          else
               echo "$RUNNER_OS not supported"
