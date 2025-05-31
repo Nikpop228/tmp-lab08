@@ -87,6 +87,7 @@ jobs:
         path: build/*.dmg
     
   create_release:
+    needs: [linux-build, windows-build, macos-build, source-archives]
     runs-on: ubuntu-latest
 
     steps:
