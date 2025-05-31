@@ -10,18 +10,22 @@ jobs:
     
   build:
     runs-on: ${{ matrix.os }}
-    
+
     strategy:
       matrix:
         include:
           - os: ubuntu-latest
             cpack_flag: DEB
+            extension: deb
           - os: ubuntu-latest
             cpack_flag: RPM
+            extension: rpm
           - os: windows-latest
             cpack_flag: WIX
+            extension: msi
           - os: macos-latest
             cpack_flag: DragNDrop
+            extension: dmg
     
     steps:
       - name: Checkout
@@ -40,3 +44,45 @@ jobs:
 
       - name: Create packages
         run: cd build && cpack -G ${{ matrix.cpack_flag }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.os }}-pack
+          path: build/*.${{ matrix.extension }}
+
+  create_release:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: download_ubuntu
+      uses: actions/download-artifact@v4
+      with:
+        name: ubuntu-latest-pack
+        path: artifacts/linux
+
+    - name: download_windows
+      uses: actions/download-artifact@v4
+      with:
+        name: windows-latest-pack
+        path: artifacts/windows
+
+    - name: download_macos
+      uses: actions/download-artifact@v4 
+      with:
+        name: macos-latest-pack
+        path: artifacts/macos
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: v1.${{ github.run_number }}
+        name: Release v1.${{ github.run_number }}
+        files: |
+          artifacts/linux/*.deb
+          artifacts/linux/*.rpm
+          artifacts/windows/*.msi
+          artifacts/macos/*.dmg
