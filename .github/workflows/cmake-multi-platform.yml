@@ -23,7 +23,19 @@ jobs:
             cpack_flag: WIX
           - os: ubuntu-latest
             cpack_flag: DEB
+          - os: ubuntu-latest
             cpack_flag: RPM
+        exclude:
+          - os: windows-latest
+            cpack_flag: DEB
+          - os: windows-latest
+            cpack_flag: RPM
+          - os: windows-latest
+            cpack_flag: DMG
+          - os: ubuntu-latest
+            cpack_flag: WIX
+          - os: ubuntu-latest
+            cpack_flag: DMG
 
     steps:
     - uses: actions/checkout@v4
