@@ -14,10 +14,10 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
     
-    - name:
+    - name: Build
       run: sudo docker build -t hello_world . 
 
-    - name: 
+    - name: Run
       run: docker run hello_world
       
     - name: Create Release
@@ -25,4 +25,3 @@ jobs:
       with:
         tag_name: v1.${{ github.run_number }}
         name: Release v1.${{ github.run_number }}
-        files: docker
