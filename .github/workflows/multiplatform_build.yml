@@ -48,7 +48,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: pack-${{ matrix.os }}-${{ matrix.extension }}
+          name: pack-${{ matrix.extension }}
           path: build/*.${{ matrix.extension }}
 
   create_release:
@@ -64,13 +64,13 @@ jobs:
     - name: download_artefacts
       uses: actions/download-artifact@v4
       with:
-        path: artifacts/pack-os
+        path: artifacts
 
-    - run: ls -a && cd artifacts && ls -a && cd ../
+    - run: mv pack-deb/p* . && mv pack-rpm/p* && mv pack-dmg/p* && mv pack-msi/p*
 
     - name: Create Release
       uses: softprops/action-gh-release@v2
       with:
         tag_name: v1.${{ github.run_number }}
         name: Release v1.${{ github.run_number }}
-        files: artifacts/pack-*/pack-*
+        files: artifacts/pack-*
