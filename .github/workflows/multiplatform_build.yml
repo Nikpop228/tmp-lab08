@@ -64,7 +64,7 @@ jobs:
     - name: download_artefacts
       uses: actions/download-artifact@v4
       with:
-        path: artifacts
+        path: artifacts/pack-os
 
     - run: ls -a && cd artifacts && cd pack-macos-latest-dmg && ls -a && ls -a && cd ../../
 
