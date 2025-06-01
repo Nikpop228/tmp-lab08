@@ -49,7 +49,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: pack-${{ matrix.os }}-${{ matrix.extension }}
-          path: build-${{ matrix.os }}/*.${{ matrix.extension }}
+          path: build/*.${{ matrix.extension }}
 
   create_release:
     needs: build
@@ -68,4 +68,4 @@ jobs:
       with:
         tag_name: v1.${{ github.run_number }}
         name: Release v1.${{ github.run_number }}
-        files: build*/pack*
+        files: build/pack*
