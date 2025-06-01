@@ -66,7 +66,7 @@ jobs:
       with:
         path: artifacts/pack-os
 
-    - run: ls -a && cd artifacts && cd pack-macos-latest-dmg && ls -a && ls -a && cd ../../
+    - run: ls -a && cd artifacts && ls -a cd ../
 
     - name: Create Release
       uses: softprops/action-gh-release@v2
