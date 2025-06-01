@@ -71,4 +71,4 @@ jobs:
       with:
         tag_name: v1.${{ github.run_number }}
         name: Release v1.${{ github.run_number }}
-        files: artifacts/pack-*/*
+        files: pack-*/*
