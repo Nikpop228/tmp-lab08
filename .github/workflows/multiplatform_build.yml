@@ -66,7 +66,7 @@ jobs:
       with:
         path: artifacts
 
-    - run: cd artifacts && ls && cd ..
+    - run: ls -a && cd artifacts && ls -a && cd ..
 
     - name: Create Release
       uses: softprops/action-gh-release@v2
