@@ -18,10 +18,14 @@ jobs:
       run: sudo docker build -t hello_world . 
 
     - name: Run
-      run: docker run hello_world
+      run: docker run --name app_hello_world hello_world
       
+    - name: Copy
+      run: sudo docker cp app_hello_world:app/build/hello_world_application/hello_world .
+
     - name: Create Release
       uses: softprops/action-gh-release@v2
       with:
         tag_name: v1.${{ github.run_number }}
         name: Release v1.${{ github.run_number }}
+        files: hello_world

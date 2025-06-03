@@ -7,6 +7,8 @@ RUN apt update
 RUN apt install -yy g++ cmake
 RUN cmake -H. -Bbuild
 RUN cmake --build build
-RUN cd build && cpack -G DEB
+RUN cd build && cpack -G DEB && cd ..
 
+VOLUME home/cache/
+RUN  sudo docker cp hello:/build/hello_world_app*/* .
 CMD ["./build/hello_world_application/hello_world"]
